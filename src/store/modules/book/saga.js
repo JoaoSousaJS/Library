@@ -1,11 +1,16 @@
-import { takeLatest, put, all } from 'redux-saga/effects';
+import { takeLatest, put, all, select } from 'redux-saga/effects';
 import { toast } from 'react-toastify';
 
 import { createBookSuccess, createBookFailure } from './action';
 
 export function* createBook({ payload }) {
   try {
+    const bookExists = yield select((state) =>
+      state.book.find((b) => b.name === payload.name)
+    );
     const { name, author, pages, read } = payload.data;
+
+    console.tron.log(bookExists);
 
     const book = {
       name,

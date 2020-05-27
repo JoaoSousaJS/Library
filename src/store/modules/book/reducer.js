@@ -4,7 +4,7 @@ const INITIAL_STATE = {
   book: [],
 };
 
-export default function book(state = INITIAL_STATE, action) {
+export default function book(state = [INITIAL_STATE], action) {
   return produce(state, (draft) => {
     switch (action.type) {
       case '@book/CREATE_BOOK_REQUEST': {

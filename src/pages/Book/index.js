@@ -1,11 +1,7 @@
-import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-
+import React, { useState } from 'react';
 import * as Yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { Container } from './styles';
-
-import { createBookRequest } from '../../store/modules/book/action';
 
 const schema = Yup.object().shape({
   name: Yup.string().required('A book needs a name'),
@@ -15,14 +11,31 @@ const schema = Yup.object().shape({
 });
 
 function Book() {
+  const [books, setBooks] = useState([
+    {
+      bookName: '',
+      authorName: '',
+      bookPages: '',
+      readStatus: '',
+    },
+  ]);
+
   const { register, handleSubmit } = useForm({ validationSchema: schema });
 
-  const book = useSelector((state) => state.book.book);
-
-  const dispatch = useDispatch();
-
   function onHandleSubmit(data) {
-    dispatch(createBookRequest(data));
+    const { name, author, pages, read } = data;
+
+    setBooks([
+      ...books,
+      {
+        bookName: name,
+        authorName: author,
+        bookPages: pages,
+        readStatus: read,
+      },
+    ]);
+
+    console.log(books);
   }
 
   return (
@@ -47,9 +60,9 @@ function Book() {
       </form>
 
       <ul>
-        {book.map((b) => (
-          <li key={b.name}>
-            {b.name} | {b.author} |{b.pages} |{b.read}
+        {books.map((b) => (
+          <li key={b.bookName}>
+            {b.bookName} | {b.authorName} | {b.bookPages} |{b.readStatus}
           </li>
         ))}
       </ul>
