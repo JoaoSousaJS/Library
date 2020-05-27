@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import * as Yup from 'yup';
 import { useForm } from 'react-hook-form';
@@ -16,6 +16,8 @@ const schema = Yup.object().shape({
 
 function Book() {
   const { register, handleSubmit } = useForm({ validationSchema: schema });
+
+  const book = useSelector((state) => state.book.book);
 
   const dispatch = useDispatch();
 
@@ -43,6 +45,14 @@ function Book() {
         <br />
         <button type="submit">Add a book</button>
       </form>
+
+      <ul>
+        {book.map((b) => (
+          <li key={b.name}>
+            {b.name} | {b.author} |{b.pages} |{b.read}
+          </li>
+        ))}
+      </ul>
     </Container>
   );
 }
