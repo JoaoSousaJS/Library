@@ -5,10 +5,10 @@ export function createBookRequest(data) {
   };
 }
 
-export function createBookSuccess(book) {
+export function createBookSuccess({ name, author, pages, read }) {
   return {
     type: '@book/CREATE_BOOK_SUCCESS',
-    payload: { book },
+    payload: { name, author, pages, read },
   };
 }
 

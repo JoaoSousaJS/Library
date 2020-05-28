@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import { useForm } from 'react-hook-form';
-import { Container } from './styles';
+import { toast } from 'react-toastify';
+import produce from 'immer';
+import { MdFavorite, MdFavoriteBorder } from 'react-icons/md';
+import { Container, BookTable } from './styles';
 
 const schema = Yup.object().shape({
   name: Yup.string().required('A book needs a name'),
@@ -11,31 +14,69 @@ const schema = Yup.object().shape({
 });
 
 function Book() {
-  const [books, setBooks] = useState([
-    {
-      bookName: '',
-      authorName: '',
-      bookPages: '',
-      readStatus: '',
-    },
-  ]);
+  const [books, setBooks] = useState([]);
 
-  const { register, handleSubmit } = useForm({ validationSchema: schema });
+  const { register, handleSubmit } = useForm({
+    validationSchema: schema,
+  });
 
   function onHandleSubmit(data) {
     const { name, author, pages, read } = data;
 
-    setBooks([
-      ...books,
-      {
-        bookName: name,
-        authorName: author,
-        bookPages: pages,
-        readStatus: read,
-      },
-    ]);
+    const booksExsits = books.find((book) => book.bookName === name);
 
+    if (booksExsits) {
+      toast.error(`The book ${name} is already registered`);
+    } else if (read === 'yes') {
+      setBooks([
+        ...books,
+        {
+          bookName: name,
+          authorName: author,
+          bookPages: pages,
+          readStatus: true,
+        },
+      ]);
+    } else {
+      setBooks([
+        ...books,
+        {
+          bookName: name,
+          authorName: author,
+          bookPages: pages,
+          readStatus: false,
+        },
+      ]);
+    }
+  }
+
+  useEffect(() => {
     console.log(books);
+  }, [books]);
+
+  function onHandleRemove(b) {
+    const { bookName } = b;
+    setBooks(books.filter((book) => book.bookName !== bookName));
+  }
+
+  function onHandleRead(b) {
+    const { bookName, readStatus } = b;
+
+    const booksExsits = books.find((book) => book.bookName === bookName);
+
+    if (readStatus === false) {
+      setBooks(
+        produce(books, (draftState) => {
+          draftState[books.indexOf(booksExsits)].readStatus = true;
+        })
+      );
+    } else {
+      setBooks(
+        produce(books, (draftState) => {
+          draftState[books.indexOf(booksExsits)].readStatus = false;
+        })
+      );
+    }
   }
 
   return (
@@ -59,13 +100,42 @@ function Book() {
         <button type="submit">Add a book</button>
       </form>
 
-      <ul>
-        {books.map((b) => (
-          <li key={b.bookName}>
-            {b.bookName} | {b.authorName} | {b.bookPages} |{b.readStatus}
-          </li>
-        ))}
-      </ul>
+      <BookTable>
+        <thead>
+          <tr>
+            <th>Book</th>
+            <th>Author</th>
+            <th>Pages</th>
+            <th>Read status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {books.map((b) => (
+            <tr key={b.bookName}>
+              <td>{b.bookName}</td>
+              <td>{b.authorName}</td>
+              <td>{b.bookPages}</td>
+              <td>
+                {b.readStatus === true ? (
+                  <MdFavorite size={30} />
+                ) : (
+                  <MdFavoriteBorder size={30} />
+                )}
+              </td>
+
+              <td>
+                <button type="button" onClick={() => onHandleRead(b)}>
+                  read
+                </button>
+                <button type="button" onClick={() => onHandleRemove(b)}>
+                  remove
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </BookTable>
     </Container>
   );
 }
