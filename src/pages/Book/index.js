@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import produce from 'immer';
 import { MdFavorite, MdFavoriteBorder } from 'react-icons/md';
-import { Container, BookTable } from './styles';
+import { Container, BookTable, BookForm } from './styles';
 
 const schema = Yup.object().shape({
   name: Yup.string().required('A book needs a name'),
@@ -81,7 +81,7 @@ function Book() {
 
   return (
     <Container>
-      <form onSubmit={handleSubmit(onHandleSubmit)}>
+      <BookForm onSubmit={handleSubmit(onHandleSubmit)}>
         <input type="text" name="name" placeholder="Name" ref={register} />
         <input type="text" name="author" placeholder="Author" ref={register} />
         <input
@@ -90,7 +90,8 @@ function Book() {
           placeholder="Amount of pages"
           ref={register}
         />
-        <h1>Have you already read?</h1>
+        <br />
+        <strong>Have you already read?</strong>
         <select name="read" ref={register}>
           <option value="yes">Yes</option>
           <option value="no">No</option>
@@ -98,7 +99,7 @@ function Book() {
 
         <br />
         <button type="submit">Add a book</button>
-      </form>
+      </BookForm>
 
       <BookTable>
         <thead>

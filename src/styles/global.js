@@ -9,6 +9,7 @@ export default createGlobalStyle`
   padding: 0;
   outline: 0;
   box-sizing: border-box;
+
 }
 
 *:focus {
@@ -18,6 +19,11 @@ export default createGlobalStyle`
 html, body, #root {
   height: 100%;
 
+
+}
+
+#root {
+  margin: 0 auto;
 }
 
 body {
@@ -25,7 +31,7 @@ body {
 }
 
 body, input, button {
-  font: 14px,'Roboto', sans-serif;
+  font: 14px,Roboto, sans-serif;
 }
 
 a {
